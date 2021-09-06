@@ -20,7 +20,7 @@ if IsDuplicityVersion() then
 		local p = promise.new()
 
 		SetTimeout(timeout, function()
-			p:resolve({false})
+			p:resolve({nil})
 		end)
 
 		local e = RegisterNetEvent('__pmc_callback:server:'..eventName, function(...)
@@ -50,7 +50,7 @@ if not IsDuplicityVersion() then
 		local ticket = GetGameTimer()
 
 		SetTimeout(timeout, function()
-			p:resolve({false})
+			p:resolve({nil})
 		end)
 
 		local e = RegisterNetEvent(('__pmc_callback:client:%s:%s'):format(eventName, ticket), function(...)
