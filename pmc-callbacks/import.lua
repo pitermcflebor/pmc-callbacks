@@ -35,7 +35,7 @@ if IsDuplicityVersion() then
 		result = Citizen.Await(p)
 
 		RemoveEventHandler(e)
-		return result
+		return table.unpack(result)
 	end
 end
 
@@ -62,7 +62,7 @@ if not IsDuplicityVersion() then
 		result = Citizen.Await(p)
 
 		RemoveEventHandler(e)
-		return result
+		return table.unpack(result)
 	end
 	
 	_G.RegisterClientCallback = function(eventName, fn)
