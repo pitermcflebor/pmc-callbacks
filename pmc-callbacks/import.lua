@@ -20,7 +20,7 @@ if IsDuplicityVersion() then
 		local p = promise.new()
 
 		SetTimeout(timeout, function()
-			p:reject({err="Timeout reached})
+			p:reject({err="Timeout reached"})
 		end)
 
 		local e = RegisterNetEvent('__pmc_callback:server:'..eventName, function(...)
