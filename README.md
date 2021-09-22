@@ -1,52 +1,79 @@
-# PMC-CALLBACKS SYSTEM
+# PMC-CALLBACKS
+
 ## Installation [EN]
-- Download the latest version of `pmc-callbacks`
+
+- Download the latest version of `pmc-callbacks` from the release section on GitHub
 - Unzip the file and add to your resources folder `pmc-callbacks`
 - Add to your .cfg file `ensure pmc-callbacks`
+
 ## Usage [EN]
-- Add to your fxmanifest resource file `shared_script '@pmc-callbacks/import.lua'`
+
+- Add `shared_script '@pmc-callbacks/import.lua'` to your resource manifest file
+
 ## Instalación [ES]
+
 - Descarga la última versión de `pmc-callbacks`
 - Descomprime el archivo y añade a tu carpeta resources `pmc-callbacks`
 - Añade a tu archivo .cfg `ensure pmc-callbacks`
+
 ## Uso [ES]
+
 - Añade a tu archivo fxmanifest `shared_script '@pmc-callbacks/import.lua'`
----
-### Methods / Métodos
-##### server-side
-| global function | params | return |
+
+## Methods / Métodos
+
+### Server:
+
+| Global function | params | return |
 |-----------------|--------|--------|
 | RegisterServerCallback | eventName `string` \| callback `function` | `nil` |
-| TriggerClientCallback | target `number` \| eventName `string` \| *args `any` | `any` |
-##### client-side
-| global function | params | return |
+| TriggerClientCallback | target `number` \| timeout `number` \| eventName `string` \| *args `any` | `any` |
+
+### Client:
+| Global function | params | return |
 |-----------------|--------|--------|
 | RegisterClientCallback | eventName `string` \| callback `function` | `nil` |
-| TriggerServerCallback | eventName `string` \| *args `any` | `any` |
----
-### Example / Ejemplo
-##### client-side
+| TriggerServerCallback | eventName `string` \| timeout `number` \| *args `any` | `any` |
+
+### Example / Ejemplo:
+
+### Client:
 ```lua
 RegisterCommand('requestserver', function(s, args)
-    local result = TriggerServerCallback('pmc-test:testingAwesomeCallback')
-    print('gotcha', result)
+  local timeout = tonumber(args[1])
+  local status, result = pcall(TriggerServerCallback, timeout, 'pmc-test:testingAwesomeCallback')
+  if status then
+    print('Gotcha', result)
+  else
+    print(result.err)
+    -- Timeout reached
+  end
 end)
 
 RegisterClientCallback('pmc-test:requestSomething', function(...)
-    -- stuff code
+    -- code
     return true -- return any
 end)
 ```
-##### server-side
+
+#### Server:
 ```lua
 RegisterServerCallback('pmc-test:testingAwesomeCallback', function(source, ...)
-    -- stuff code
-    return true -- return any
+  -- code
+  return true -- return any
 end)
 
 RegisterCommand('requestclient', function(s, args)
-    local target = tonumber(args[1])
-    local result = TriggerClientCallback(target, 'pmc-test:requestSomething')
-    print('gotcha', result)
+  local serverId = tonumber(args[1])
+  local timeout = tonumber(args[2])
+
+  local status, result = pcall(TriggerClientCallback, target, timeout, 'pmc-test:requestSomething')
+
+  if status then
+    print('Gotcha', result)
+  else
+    print(result.err)
+    -- Timeout reached
+  end
 end)
 ```

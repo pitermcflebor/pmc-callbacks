@@ -1,4 +1,3 @@
-
 RegisterNetEvent('__pmc_callback:server')
 AddEventHandler('__pmc_callback:server', function(eventName, ticket, ...)
 	local s = source

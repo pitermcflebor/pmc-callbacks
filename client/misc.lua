@@ -1,4 +1,3 @@
-
 RegisterNetEvent('__pmc_callback:client')
 AddEventHandler('__pmc_callback:client', function(eventName, ...)
 	local p = promise.new()

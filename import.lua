@@ -19,9 +19,11 @@ if IsDuplicityVersion() then
 		local result
 		local p = promise.new()
 
-		SetTimeout(timeout, function()
-			p:reject({err="Timeout reached"})
-		end)
+		if timeout ~= 0 then
+			SetTimeout(timeout, function()
+				p:reject({err="Timeout reached"})
+			end)
+		end
 
 		local e = RegisterNetEvent('__pmc_callback:server:'..eventName, function(...)
 			local s = source
@@ -49,9 +51,11 @@ if not IsDuplicityVersion() then
 		local p = promise.new()
 		local ticket = GetGameTimer()
 
-		SetTimeout(timeout, function()
-			p:reject({err="Timeout reached"})
-		end)
+		if timeout ~= 0 then
+			SetTimeout(timeout, function()
+				p:reject({err="Timeout reached"})
+			end)
+		end
 
 		local e = RegisterNetEvent(('__pmc_callback:client:%s:%s'):format(eventName, ticket), function(...)
 			p:resolve({...})
@@ -64,7 +68,7 @@ if not IsDuplicityVersion() then
 		RemoveEventHandler(e)
 		return table.unpack(result)
 	end
-	
+
 	_G.RegisterClientCallback = function(eventName, fn)
 		assert(type(eventName) == 'string', 'Invalid Lua type at argument #1, expected string, got '..type(eventName))
 		assert(type(fn) == 'function', 'Invalid Lua type at argument #2, expected function, got '..type(fn))
