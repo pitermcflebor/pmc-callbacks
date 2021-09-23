@@ -1,13 +1,27 @@
 fx_version 'cerulean'
 game 'gta5'
 
+author 'Piter McFlebor'
 description 'Standalone callback system by PiterMcFlebor'
-version '1.0'
+version '2.0'
 
-file 'import.lua'
-client_scripts {
-    'client/misc.lua'
+shared_scripts {
+    'import.lua',
+    --'export.lua'
 }
-server_scripts {
-    'server/misc.lua'
+
+-- client-export
+exports {
+    'RegisterClientCallback',
+    'UnregisterClientCallback',
+    'TriggerClientCallback',
+    'TriggerServerCallback',
+}
+
+-- server-export
+server_exports {
+    'RegisterServerCallback',
+    'UnregisterServerCallback',
+    'TriggerClientCallback',
+    'TriggerServerCallback',
 }
