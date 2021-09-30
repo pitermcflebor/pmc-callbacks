@@ -54,7 +54,7 @@ if IS_SERVER then
 				cb( msgpack_pack_args( eventCallback(src, table_unpack(msgpack_unpack(packed)) ) ) )
 			else
 				-- return the data
-				TriggerClientEvent(('pmc__client_callback_response:%s:%s'):format(eventName, src), source, msgpack_pack_args( eventCallback(source, table_unpack(msgpack_unpack(packed)) ) ))
+				TriggerClientEvent(('pmc__client_callback_response:%s:%s'):format(eventName, source), source, msgpack_pack_args( eventCallback(source, table_unpack(msgpack_unpack(packed)) ) ))
 			end
 		end)
 		-- return the event data to UnregisterServerCallback
