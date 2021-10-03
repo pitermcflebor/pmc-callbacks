@@ -82,7 +82,7 @@ if IS_SERVER then
 		ensure(args, 'table'); ensure(args.source, 'string', 'number'); ensure(args.eventName, 'string'); ensure(args.args, 'table', 'nil'); ensure(args.timeout, 'number', 'nil'); ensure(args.timedout, 'function', 'nil'); ensure(args.callback, 'function', 'nil')
 
 		-- check if is a valid playerId [1-...]
-		if tonumber(args.source) > 0 then
+		if tonumber(args.source) >= 0 then
 			-- create a new ticket
 			local ticket = tostring(args.source) .. 'x' .. tostring(GetGameTimer())
 			-- create a new promise
@@ -90,13 +90,11 @@ if IS_SERVER then
 			-- save the callback function on this call
 			local eventCallback = args.callback
 			-- save the event data on this call
-			local eventData = RegisterNetEvent(('pmc__callback:retval:%s:%s:%s'):format(args.source, args.eventName, ticket), function(packed)
+			local eventData = RegisterNetEvent(('pmc__callback_retval:%s:%s:%s'):format(args.source, args.eventName, ticket), function(packed)
 				-- check if this call was async
 				-- & if promise wasn't rejected or resolved
 				if eventCallback and prom.state == PENDING then eventCallback( table_unpack(msgpack_unpack(packed)) ) end
 				prom:resolve( table_unpack(msgpack_unpack(packed)) )
-				-- remove the event handler
-				RemoveEventHandler(eventData)
 			end)
 
 			-- request the callback
@@ -124,11 +122,14 @@ if IS_SERVER then
 
 			-- check if this call was async
 			if not eventCallback then
-				return Citizen.Await(prom)
+				Citizen.Await(prom)
+				-- remove the event handler
+				RemoveEventHandler(eventData)
+				return prom
 			end
 		else
 			-- raise an error if source isn't valid
-			error 'source should be higher than 0'
+			error 'source should be equal too or higher than 0'
 		end
 	end
 
@@ -245,8 +246,7 @@ if not IS_SERVER then
 			-- & the promise wasn't rejected or resolved
 			if eventCallback and prom.state == PENDING then eventCallback( table_unpack(msgpack_unpack(packed)) ) end
 			prom:resolve( table_unpack(msgpack_unpack(packed)) )
-			-- remove the event handler
-			RemoveEventHandler(eventData)
+
 		end)
 
 		-- fire the callback event
@@ -274,7 +274,10 @@ if not IS_SERVER then
 
 		-- check if this call is async
 		if not eventCallback then
-			return Citizen.Await(prom)
+			Citizen.Await(prom)
+			-- remove the event handler
+			RemoveEventHandler(eventData)
+			return prom
 		end
 	end
 
