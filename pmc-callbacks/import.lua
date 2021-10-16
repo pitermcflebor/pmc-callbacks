@@ -122,10 +122,10 @@ if IS_SERVER then
 
 			-- check if this call was async
 			if not eventCallback then
-				Citizen.Await(prom)
+				local result = Citizen.Await(prom)
 				-- remove the event handler
 				RemoveEventHandler(eventData)
-				return prom
+				return result
 			end
 		else
 			-- raise an error if source isn't valid
@@ -274,10 +274,10 @@ if not IS_SERVER then
 
 		-- check if this call is async
 		if not eventCallback then
-			Citizen.Await(prom)
+			local result = Citizen.Await(prom)
 			-- remove the event handler
 			RemoveEventHandler(eventData)
-			return prom
+			return result
 		end
 	end
 
